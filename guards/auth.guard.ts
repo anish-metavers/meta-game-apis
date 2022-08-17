@@ -33,16 +33,16 @@ export class AuthGuard implements CanActivate {
             const decoded = jwt.verify(token, 'secret');
             const { id } = decoded;
 
-            const user = global.DB.User.findOne({
+            const user = await global.DB.User.findOne({
                 where: { id },
                 attributes: ['id', 'name', 'email'],
             });
 
             if (!user) throw new HttpException('No User Found!!', 401);
 
+            req.user = user;
             return true;
         } catch (error) {
-            return true;
             throw new HttpException(
                 {
                     statusCode: 401,
