@@ -17,7 +17,11 @@ export class RoleGuard implements CanActivate {
                 role_id: 1,
             },
         });
-        if (!user) throw new HttpException('User is Not Admin!!', 401);
+        if (!user)
+            throw new HttpException(
+                'Only Admin has access to this Page!!',
+                401,
+            );
 
         return true;
     }
