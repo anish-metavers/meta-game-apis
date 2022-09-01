@@ -1,8 +1,16 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import {
+    IsArray,
+    IsEmail,
+    IsNotEmpty,
+    IsString,
+    IS_STRING,
+    Max,
+    Min,
+} from 'class-validator';
 
 const passwordValidator = require('password-validator');
 
-export class SignUpDTO {
+export class CreateUser {
     @IsNotEmpty({ message: '$property is Required!!' })
     name: String;
 
@@ -14,16 +22,24 @@ export class SignUpDTO {
     @IsString()
     password: String;
 
+    @IsArray()
     roles: Number[];
 }
 
-export class LoginDTO {
+export class UpdateUser {
+    @IsNotEmpty({ message: '$property is Required!!' })
+    name: String;
+
     @IsNotEmpty()
     @IsEmail()
     email: String;
 
     @IsNotEmpty()
+    @IsString()
     password: String;
+
+    @IsArray()
+    roles: Number[];
 }
 
 // Create a schema
