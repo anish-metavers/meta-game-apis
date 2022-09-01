@@ -13,16 +13,12 @@ export class AuthController {
     @Post('login')
     @HttpCode(200)
     async loginUser(@Body() body: LoginDTO) {
-        const user = await this.authService.loginUser(body);
-        const token = this.authService.createJWT(user.id, user.email);
-        return { message: 'Login Successfully', token, data: user };
+        return await this.authService.loginUser(body);
     }
 
     @Post('signup')
     @HttpCode(200)
     async signUpUser(@Body() body: SignUpDTO) {
-        const user = await this.authService.signUpUser(body);
-        const token = this.authService.createJWT(user.id, user.email);
-        return { message: 'SignUp Successfully', token, data: user };
+        return await this.authService.signUpUser(body);
     }
 }

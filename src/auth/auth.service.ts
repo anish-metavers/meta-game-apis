@@ -14,30 +14,32 @@ export class AuthService {
     async loginUser(@Body() body: LoginDTO) {
         const { email, password } = body;
 
-        if (!email || !password)
-            throw new HttpException('All Fields are Required!!', 400);
+        // if (!email || !password)
+        //     throw new HttpException('All Fields are Required!!', 400);
 
+        // Checking Email
         const user = await global.DB.User.findOne({
             where: {
                 email: email.toLowerCase(),
             },
         });
-
         if (!user)
             throw new HttpException('No User found with this Email!!', 400);
 
+        // Checking Pasword
         const isMatch = await bcrypt.compare(password, user.password);
-
         if (!isMatch) throw new HttpException('Incorrect Password!!', 400);
 
-        const userPass = await global.DB.User.findOne({
-            where: {
-                email: email.toLowerCase(),
-            },
-            attributes: ['id', 'name', 'email'],
-        });
+        const userData = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+        };
 
-        return userPass;
+        // Generating Token
+        const token = this.createJWT(userData.id, userData.email);
+
+        return { message: 'Login Successfully', data: userData, token };
     }
 
     async signUpUser(@Body() body: SignUpDTO) {
@@ -72,21 +74,29 @@ export class AuthService {
         });
 
         // Assigning Roles!!
-        if (!roles || roles.length === 0)
-            return { id: newUser.id, name: newUser.name, email: newUser.email };
 
-        const rolesFound = await global.DB.Roles.findAll({
-            where: { id: { [Op.in]: roles } },
-            attributes: ['id'],
-        });
+        // TO BE IMPLEMENTED
+        // if (!roles || roles.length === 0)
+        //     return { id: newUser.id, name: newUser.name, email: newUser.email };
 
-        if (rolesFound && rolesFound.length > 0) {
-            const userRolesObj = rolesFound.map((item: any) => {
-                return { user_id: newUser.id, role_id: item.id };
-            });
-            await global.DB.UserRoles.bulkCreate(userRolesObj);
-        }
+        // const rolesFound = await global.DB.Roles.findAll({
+        //     where: { id: { [Op.in]: roles } },
+        //     attributes: ['id'],
+        // });
 
-        return { id: newUser.id, name: newUser.name, email: newUser.email };
+        // if (rolesFound && rolesFound.length > 0) {
+        //     const userRolesObj = rolesFound.map((item: any) => {
+        //         return { user_id: newUser.id, role_id: item.id };
+        //     });
+        //     await global.DB.UserRoles.bulkCreate(userRolesObj);
+        // }
+
+        const token = this.createJWT(newUser.id, newUser.email);
+
+        return {
+            message: 'SignUp Successfully',
+            token,
+            data: { id: newUser.id, name: newUser.name, email: newUser.email },
+        };
     }
 }
