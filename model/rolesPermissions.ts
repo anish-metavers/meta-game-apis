@@ -1,22 +1,21 @@
 import { Model } from 'sequelize';
 
-class Roles extends Model {}
+class RolesPermissions extends Model {}
 
 const model = (sequelize: any, DataTypes: any) => {
-    Roles.init(
+    RolesPermissions.init(
         {
-            // Model attributes are defined here
             id: {
                 type: DataTypes.INTEGER,
                 autoIncrement: true,
                 allowNull: false,
                 primaryKey: true,
             },
-            name: {
-                type: DataTypes.STRING,
+            role_id: {
+                type: DataTypes.INTEGER,
                 allowNull: false,
             },
-            priority: {
+            permission_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },
@@ -26,11 +25,11 @@ const model = (sequelize: any, DataTypes: any) => {
         {
             timestamps: true,
             sequelize,
-            modelName: 'Roles',
-            tableName: 'roles',
+            modelName: 'RolesPermissions',
+            tableName: 'roles_permissions',
         },
     );
-    return Roles;
+    return RolesPermissions;
 };
 
 export default model;

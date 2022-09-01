@@ -1,8 +1,11 @@
-import { Controller, Post, Req, Res, Body, HttpCode } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, UseFilters } from '@nestjs/common';
 import { LoginDTO, SignUpDTO } from './dto/authDTO';
 import { AuthService } from './auth.service';
+import { GlobalExceptionsFilter } from 'exception/GlobalException.filter';
+import { HttpExceptionFilter } from 'exception/HttpException.filter';
 
 @Controller('auth')
+@UseFilters(GlobalExceptionsFilter, HttpExceptionFilter)
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 

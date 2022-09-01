@@ -2,6 +2,8 @@ import { Sequelize, DataTypes } from 'sequelize';
 import User from './user';
 import Roles from './roles';
 import UserRoles from './userRoles';
+import Permissions from './permissions';
+import RolesPermissions from './rolesPermissions';
 
 const DB = async () => {
     const sequelize = new Sequelize(
@@ -24,7 +26,10 @@ const DB = async () => {
             User: User(sequelize, DataTypes),
             Roles: Roles(sequelize, DataTypes),
             UserRoles: UserRoles(sequelize, DataTypes),
+            Permissions: Permissions(sequelize, DataTypes),
+            RolesPermissions: RolesPermissions(sequelize, DataTypes),
         };
+
         // // ------ DANGER TO UNCOMMENT ------
         // await sequelize.sync({ force: true });
 
