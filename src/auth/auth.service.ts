@@ -8,7 +8,9 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class AuthService {
     createJWT(id: Number, email: String): String {
-        return jwt.sign({ id, email }, 'secret', { expiresIn: '2h' });
+        return jwt.sign({ id, email }, 'secret', {
+            expiresIn: process.env.JWT_EXPIRES_IN,
+        });
     }
 
     async loginUser(@Body() body: LoginDTO) {
