@@ -7,11 +7,21 @@ import RolesPermissions from './rolesPermissions';
 
 const DB = async () => {
     const sequelize = new Sequelize(
-        process.env.MYSQL_DB,
-        process.env.MYSQL_USER,
-        process.env.MYSQL_PASSWORD,
+        process.env.IS_PROD === 'true'
+            ? process.env.PROD_MYSQL_DB
+            : process.env.LOCAL_MYSQL_DB,
+        process.env.IS_PROD === 'true'
+            ? process.env.PROD_MYSQL_USER
+            : process.env.LOCAL_MYSQL_USER,
+        process.env.IS_PROD === 'true'
+            ? process.env.PROD_MYSQL_PASSWORD
+            : process.env.LOCAL_MYSQL_PASSWORD,
+
         {
-            host: process.env.MYSQL_HOST,
+            host:
+                process.env.IS_PROD === 'true'
+                    ? process.env.PROD_MYSQL_HOST
+                    : process.env.LOCAL_MYSQL_HOST,
             dialect: 'mysql',
             logging: false,
         },
