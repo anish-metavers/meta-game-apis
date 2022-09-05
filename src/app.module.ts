@@ -7,6 +7,7 @@ import { RoleModule } from './role/role.module';
 import { PermissionModule } from './permission/permission.module';
 import { TeenPattiModule } from './teen-patti/teen-patti.module';
 import { CronModule } from './cron/cron.module';
+import { GameModule } from './game/game.module';
 @Module({
     imports: [
         ConfigModule.forRoot(),
@@ -17,6 +18,7 @@ import { CronModule } from './cron/cron.module';
         PermissionModule,
         TeenPattiModule,
         CronModule,
+        GameModule,
     ],
     controllers: [],
     providers: [],

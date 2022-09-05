@@ -17,7 +17,7 @@ const model = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
             },
             winner: {
-                type: DataTypes.ENUM('A', 'B'),
+                type: DataTypes.ENUM('A', 'B', 'Draw'),
                 allowNull: true,
             },
             player_a_cards: {

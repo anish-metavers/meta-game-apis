@@ -25,6 +25,10 @@ const DB = async () => {
                     : process.env.LOCAL_MYSQL_HOST,
             dialect: 'mysql',
             logging: false,
+            dialectOptions: {
+                dateStrings: true,
+                typeCast: true,
+            },
             timezone: '+05:30',
         },
     );
