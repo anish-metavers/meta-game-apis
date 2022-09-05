@@ -41,6 +41,7 @@ export class UserService {
             name,
             email,
             password: passwordHash,
+            wallet_balance: 0,
         });
 
         // Assigning Roles!!

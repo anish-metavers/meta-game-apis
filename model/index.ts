@@ -4,6 +4,7 @@ import Roles from './roles';
 import UserRoles from './userRoles';
 import Permissions from './permissions';
 import RolesPermissions from './rolesPermissions';
+import Game from './game';
 
 const DB = async () => {
     const sequelize = new Sequelize(
@@ -24,6 +25,11 @@ const DB = async () => {
                     : process.env.LOCAL_MYSQL_HOST,
             dialect: 'mysql',
             logging: false,
+            dialectOptions: {
+                dateStrings: true,
+                typeCast: true,
+            },
+            timezone: '+05:30',
         },
     );
 
@@ -38,6 +44,7 @@ const DB = async () => {
             UserRoles: UserRoles(sequelize, DataTypes),
             Permissions: Permissions(sequelize, DataTypes),
             RolesPermissions: RolesPermissions(sequelize, DataTypes),
+            Game: Game(sequelize, DataTypes),
         };
 
         // // ------ DANGER TO UNCOMMENT ------

@@ -6,8 +6,20 @@ import { MessageModule } from './message/message.module';
 import { RoleModule } from './role/role.module';
 import { PermissionModule } from './permission/permission.module';
 import { TeenPattiModule } from './teen-patti/teen-patti.module';
+import { CronModule } from './cron/cron.module';
+import { GameModule } from './game/game.module';
 @Module({
-    imports: [UserModule, AuthModule, ConfigModule.forRoot(), MessageModule, RoleModule, PermissionModule, TeenPattiModule],
+    imports: [
+        ConfigModule.forRoot(),
+        UserModule,
+        AuthModule,
+        MessageModule,
+        RoleModule,
+        PermissionModule,
+        TeenPattiModule,
+        CronModule,
+        GameModule,
+    ],
     controllers: [],
     providers: [],
 })
