@@ -30,7 +30,11 @@ export class AuthService {
 
         // Checking Pasword
         const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) throw new HttpException('Incorrect Password!!', 400);
+        if (!isMatch)
+            throw new HttpException(
+                'Incorrect Email Address OR Password!!',
+                400,
+            );
 
         const userData = {
             id: user.id,
