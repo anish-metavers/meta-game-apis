@@ -29,4 +29,26 @@ export class GameService {
             },
         };
     }
+
+    async lastTenGames() {
+        const gameResults = await global.DB.Game.findAll({
+            where: {
+                game_status: 'result_declared',
+            },
+            attributes: [
+                'id',
+                'winner',
+                'player_a_cards',
+                'player_b_cards',
+                'result_timestamp',
+                'game_status',
+            ],
+            order: [['result_timestamp', 'DESC']],
+            limit: 10,
+        });
+        return {
+            message: 'Last 10 Game Data Fetched Successfully',
+            gameData: gameResults,
+        };
+    }
 }
