@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CardConfig } from 'utils/config';
-
+import Deck from '../card/deck';
 @Injectable()
 export class CronService {
     private readonly logger = new Logger(CronService.name);
@@ -137,4 +137,5 @@ export class CronService {
             return newShuffledDeck.pop();
         };
     }
+    
 }
