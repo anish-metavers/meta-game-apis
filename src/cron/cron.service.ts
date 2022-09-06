@@ -32,38 +32,42 @@ export class CronService {
             });
 
             if (timeCounter === 21) {
-                console.time('t1');
+                // Card Draw 1
                 await Game.update({
                     game_status: 'card_drawn_1',
                     player_a_cards: [...Game.player_a_cards, drawCard()],
                 });
                 console.log('Draw-1');
-                console.timeEnd('t1');
             } else if (timeCounter === 26) {
+                // Card Draw 2
                 await Game.update({
                     game_status: 'card_drawn_2',
                     player_b_cards: [...Game.player_b_cards, drawCard()],
                 });
                 console.log('Draw-2');
             } else if (timeCounter === 31) {
+                // Card Draw 3
                 await Game.update({
                     game_status: 'card_drawn_3',
                     player_a_cards: [...Game.player_a_cards, drawCard()],
                 });
                 console.log('Draw-3');
             } else if (timeCounter === 36) {
+                // Card Draw 4
                 await Game.update({
                     game_status: 'card_drawn_4',
                     player_b_cards: [...Game.player_b_cards, drawCard()],
                 });
                 console.log('Draw-4');
             } else if (timeCounter === 41) {
+                // Card Draw 5
                 await Game.update({
                     game_status: 'card_drawn_5',
                     player_a_cards: [...Game.player_a_cards, drawCard()],
                 });
                 console.log('Draw-5');
             } else if (timeCounter === 46) {
+                // Card Draw 6
                 await Game.update({
                     game_status: 'card_drawn_6',
                     player_b_cards: [...Game.player_b_cards, drawCard()],
@@ -77,6 +81,9 @@ export class CronService {
             } else if (timeCounter === 55) {
                 await Game.update({
                     game_status: 'result_declared',
+                    winner:
+                        Math.floor(Math.random() * 10) % 2 === 0 ? 'A' : 'B',
+                    result_timestamp: Date.now(),
                 });
                 console.log('Declare Results');
             } else if (timeCounter === 59) {
