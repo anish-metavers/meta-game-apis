@@ -1,35 +1,48 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CardConfig } from 'utils/config';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class CronService {
     private readonly logger = new Logger(CronService.name);
 
-    // @Cron('0 */2 * * * *')
+    // @Cron('0 */1 * * * *')
     async cronForTeenPatti() {
         console.log('CRON STARTED');
         // Initialize New Game
 
-        const gameObject = {
-            title: 'Regular Teen Patti',
-            game_type: 'regular',
-            player_a_cards: [],
-            player_b_cards: [],
-            current_time: 0,
-            game_status: 'betting',
-        };
+        let Game = await global.DB.Game.findOne({
+            where: {
+                game_status: { [Op.ne]: 'result_declared' },
+            },
+            order: [['createdAt', 'DESC']],
+            logging: true,
+        });
+        console.log(Game);
 
-        const Game = await global.DB.Game.create(gameObject);
+        if (!Game) {
+            const gameObject = {
+                title: 'Regular Teen Patti',
+                game_type: 'regular',
+                player_a_cards: [],
+                player_b_cards: [],
+                current_time: 0,
+                game_status: 'betting',
+            };
+            Game = await global.DB.Game.create(gameObject);
+        }
+
         const drawCard = this.shuffleDeck();
 
-        let timeCounter = 0;
+        // let timeCounter = 0;
         const interval = setInterval(async () => {
-            timeCounter += 1;
+            // timeCounter += 1;
             // console.log('Timer Counter: ', timeCounter);
             await Game.update({
-                current_time: timeCounter,
+                current_time: Game.current_time + 1,
             });
+            let timeCounter = await Game.current_time;
 
             if (timeCounter === 21) {
                 // Card Draw 1

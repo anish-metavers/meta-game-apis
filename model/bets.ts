@@ -1,9 +1,9 @@
 import { Model } from 'sequelize';
 
-class User extends Model {}
+class Bets extends Model {}
 
 const model = (sequelize: any, DataTypes: any) => {
-    User.init(
+    Bets.init(
         {
             // Model attributes are defined here
             id: {
@@ -12,22 +12,26 @@ const model = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
                 primaryKey: true,
             },
-            name: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-            email: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-            wallet_balance: {
+            game_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                defaultValue: 0,
             },
-            password: {
+            user_id: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            amount: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            bet_option: {
                 type: DataTypes.STRING,
                 allowNull: false,
+            },
+            bet_result: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                defaultValue: null,
             },
             createdAt: { type: DataTypes.DATE, field: 'created_at' },
             updatedAt: { type: DataTypes.DATE, field: 'updated_at' },
@@ -35,11 +39,11 @@ const model = (sequelize: any, DataTypes: any) => {
         {
             timestamps: true,
             sequelize,
-            modelName: 'User',
-            tableName: 'users',
+            modelName: 'Bets',
+            tableName: 'bets',
         },
     );
-    return User;
+    return Bets;
 };
 
 export default model;
