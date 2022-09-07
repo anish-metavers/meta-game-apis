@@ -5,6 +5,7 @@ import UserRoles from './userRoles';
 import Permissions from './permissions';
 import RolesPermissions from './rolesPermissions';
 import Game from './game';
+import Bets from './bets';
 
 const DB = async () => {
     const sequelize = new Sequelize(
@@ -45,10 +46,11 @@ const DB = async () => {
             Permissions: Permissions(sequelize, DataTypes),
             RolesPermissions: RolesPermissions(sequelize, DataTypes),
             Game: Game(sequelize, DataTypes),
+            Bets: Bets(sequelize, DataTypes),
         };
 
         // // ------ DANGER TO UNCOMMENT ------
-        // await sequelize.sync({ force: true });
+        // await sequelize.sync({ alter: true });
 
         global.DB = db;
     } catch (error) {

@@ -22,8 +22,13 @@ import { HttpExceptionFilter } from 'exception/HttpException.filter';
 export class GameController {
     constructor(private readonly gameService: GameService) {}
 
-    @Get('/live-game')
+    @Get('live-game')
     findLiveGame() {
         return this.gameService.findLiveGame();
+    }
+
+    @Get('last-10-games')
+    lastTenGames() {
+        return this.gameService.lastTenGames();
     }
 }
