@@ -5,7 +5,6 @@ import { ConfigModule } from '@nestjs/config';
 import { MessageModule } from './message/message.module';
 import { RoleModule } from './role/role.module';
 import { PermissionModule } from './permission/permission.module';
-import { TeenPattiModule } from './teen-patti/teen-patti.module';
 import { CronModule } from './cron/cron.module';
 import { GameModule } from './game/game.module';
 import { BetModule } from './bet/bet.module';
@@ -17,7 +16,6 @@ import { BetModule } from './bet/bet.module';
         MessageModule,
         RoleModule,
         PermissionModule,
-        TeenPattiModule,
         CronModule,
         GameModule,
         BetModule,

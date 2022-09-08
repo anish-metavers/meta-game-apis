@@ -1,4 +1,4 @@
-import { Model, literal } from 'sequelize';
+import { Model } from 'sequelize';
 
 class Game extends Model {}
 
@@ -16,10 +16,6 @@ const model = (sequelize: any, DataTypes: any) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            winner: {
-                type: DataTypes.ENUM('A', 'B', 'Draw'),
-                allowNull: true,
-            },
             player_a_cards: {
                 type: DataTypes.JSON,
                 allowNull: true,
@@ -28,13 +24,21 @@ const model = (sequelize: any, DataTypes: any) => {
                 type: DataTypes.JSON,
                 allowNull: true,
             },
-            result_timestamp: {
-                type: DataTypes.DATE,
-                allowNull: true,
-            },
             current_time: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
+            },
+            winner: {
+                type: DataTypes.ENUM('A', 'B', 'Draw'),
+                allowNull: true,
+            },
+            win_desc: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            result_timestamp: {
+                type: DataTypes.DATE,
+                allowNull: true,
             },
             game_status: {
                 type: DataTypes.ENUM(
@@ -47,6 +51,7 @@ const model = (sequelize: any, DataTypes: any) => {
                     'card_drawn_6',
                     'processing_result',
                     'result_declared',
+                    'completed',
                 ),
                 allowNull: false,
             },
