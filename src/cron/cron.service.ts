@@ -1,160 +1,137 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { CardConfig } from 'utils/config';
 import { Op } from 'sequelize';
+import Card from '../../utils/cards';
+import * as teenPattiScore from 'teenpattisolver';
 
 @Injectable()
 export class CronService {
     private readonly logger = new Logger(CronService.name);
 
-    // @Cron('0 */1 * * * *')
+    @Cron('0 */1 * * * *')
     async cronForTeenPatti() {
-        console.log('CRON STARTED');
-        // Initialize New Game
+        try {
+            console.log('CRON STARTED');
 
-        let Game = await global.DB.Game.findOne({
-            where: {
-                game_status: { [Op.ne]: 'result_declared' },
-            },
-            order: [['createdAt', 'DESC']],
-            logging: true,
-        });
-        console.log(Game);
+            // Create a new Shuffled Deck
+            let cards = new Card();
+            cards.shuffleCards();
 
-        if (!Game) {
-            const gameObject = {
-                title: 'Regular Teen Patti',
-                game_type: 'regular',
-                player_a_cards: [],
-                player_b_cards: [],
-                current_time: 0,
-                game_status: 'betting',
-            };
-            Game = await global.DB.Game.create(gameObject);
-        }
-
-        const drawCard = this.shuffleDeck();
-
-        // let timeCounter = 0;
-        const interval = setInterval(async () => {
-            // timeCounter += 1;
-            // console.log('Timer Counter: ', timeCounter);
-            await Game.update({
-                current_time: Game.current_time + 1,
+            // Check if am Incomplete Game is Available
+            let Game = await global.DB.Game.findOne({
+                where: {
+                    game_status: { [Op.ne]: 'completed' },
+                },
+                order: [['createdAt', 'DESC']],
             });
-            let timeCounter = await Game.current_time;
 
-            if (timeCounter === 21) {
-                // Card Draw 1
-                await Game.update({
-                    game_status: 'card_drawn_1',
-                    player_a_cards: [...Game.player_a_cards, drawCard()],
-                });
-                console.log('Draw-1');
-            } else if (timeCounter === 26) {
-                // Card Draw 2
-                await Game.update({
-                    game_status: 'card_drawn_2',
-                    player_b_cards: [...Game.player_b_cards, drawCard()],
-                });
-                console.log('Draw-2');
-            } else if (timeCounter === 31) {
-                // Card Draw 3
-                await Game.update({
-                    game_status: 'card_drawn_3',
-                    player_a_cards: [...Game.player_a_cards, drawCard()],
-                });
-                console.log('Draw-3');
-            } else if (timeCounter === 36) {
-                // Card Draw 4
-                await Game.update({
-                    game_status: 'card_drawn_4',
-                    player_b_cards: [...Game.player_b_cards, drawCard()],
-                });
-                console.log('Draw-4');
-            } else if (timeCounter === 41) {
-                // Card Draw 5
-                await Game.update({
-                    game_status: 'card_drawn_5',
-                    player_a_cards: [...Game.player_a_cards, drawCard()],
-                });
-                console.log('Draw-5');
-            } else if (timeCounter === 46) {
-                // Card Draw 6
-                await Game.update({
-                    game_status: 'card_drawn_6',
-                    player_b_cards: [...Game.player_b_cards, drawCard()],
-                });
-                console.log('Draw-6');
-            } else if (timeCounter === 51) {
-                await Game.update({
-                    game_status: 'processing_result',
-                });
-                console.log('Processing Results');
-            } else if (timeCounter === 55) {
-                await Game.update({
-                    game_status: 'result_declared',
-                    winner:
-                        Math.floor(Math.random() * 10) % 2 === 0 ? 'A' : 'B',
-                    result_timestamp: Date.now(),
-                });
-                console.log('Declare Results');
-            } else if (timeCounter === 59) {
-                clearInterval(interval);
+            // If Game Exist, We remove the Drawn Cards from our New Deck
+            if (Game) {
+                let cardsToSkip = [
+                    ...Game.player_a_cards,
+                    ...Game.player_b_cards,
+                ];
+                if (cardsToSkip.length > 0)
+                    cards.deck = cards.deck.filter((item) => {
+                        return !cardsToSkip.includes(
+                            `${item.number}${item.type}`,
+                        );
+                    });
             }
-        }, 1000);
+
+            // If Game does not Exists, Create a new Game object
+            if (!Game) {
+                const gameObject = {
+                    title: 'Regular Teen Patti',
+                    game_type: 'regular',
+                    player_a_cards: [],
+                    player_b_cards: [],
+                    current_time: 0,
+                    game_status: 'betting',
+                };
+                Game = await global.DB.Game.create(gameObject);
+            }
+
+            // Creating an Interval for 1 Second
+            const interval = setInterval(async () => {
+                // Updating Timer Count in Game Object
+                await Game.update({
+                    current_time: Game.current_time + 1,
+                });
+                let timeCounter = await Game.current_time;
+
+                // Drawing Player A and B Cards One by One
+                if (timeCounter >= 21 && timeCounter <= 46) {
+                    let tc = timeCounter;
+                    let propName =
+                        tc === 21 || tc === 31 || tc === 41
+                            ? 'player_a_cards'
+                            : 'player_b_cards';
+
+                    let indexObj = { 21: 0, 26: 1, 31: 2, 36: 3, 41: 4, 46: 5 };
+                    let i = indexObj[tc];
+
+                    if (i === 0 || i) {
+                        await Game.update({
+                            game_status: `card_drawn_${i + 1}`,
+                            [propName]: [
+                                ...Game[propName],
+                                `${cards.deck[i].number}${cards.deck[i].type}`,
+                            ],
+                        });
+                        console.log(`Draw-${i + 1}`);
+                    }
+                }
+
+                // Updating Game Status to "Processing Results"
+                else if (timeCounter === 51) {
+                    await Game.update({
+                        game_status: 'processing_result',
+                    });
+                    console.log('Processing Results');
+                }
+
+                // Updating Game Status to "Results Declared"
+                else if (timeCounter === 55) {
+                    // Calling Cards Compare Function
+                    const winnerData = this.compareCards(
+                        Game.player_a_cards,
+                        Game.player_b_cards,
+                    );
+                    await Game.update({
+                        game_status: 'result_declared',
+                        ...winnerData,
+                        result_timestamp: Date.now(),
+                    });
+                    console.log('Declare Results');
+                }
+
+                // Updating Game Status to "Completed"
+                else if (timeCounter === 59) {
+                    await Game.update({
+                        game_status: 'completed',
+                    });
+                    console.log('Game Completed');
+                    clearInterval(interval);
+                }
+            }, 1000);
+        } catch (err) {
+            console.log('--------------------------------');
+            console.log('Error in Game Cron: ' + err.message);
+            console.log(err);
+            console.log('--------------------------------');
+        }
     }
 
-    // 0-20 : Betting
-    // 21-25 : Draw-1
-    // 26-30 : Draw-2
-    // 31-35 : Draw-3
-    // 36-40 : Draw-4
-    // 41-45 : Draw-5
-    // 46-50 : Draw-6
-    // 51-55 : Processing Results
-    // 56-59 : Declare Results
+    // Method to Check Who Wins the game
+    compareCards(player_a_cards: String[], player_b_cards: String[]) {
+        let playerA = teenPattiScore.scoreHandsNormal(player_a_cards);
+        let playerB = teenPattiScore.scoreHandsNormal(player_b_cards);
 
-    // @Cron('1-59 * * * * *')
-    // async test() {
-    //     this.logger.log('TEST CRON');
-    // }
-
-    shuffleDeck() {
-        // const cardNumbers = [
-        //     'A',
-        //     '2',
-        //     '3',
-        //     '4',
-        //     '5',
-        //     '6',
-        //     '7',
-        //     '8',
-        //     '9',
-        //     '10',
-        //     'J',
-        //     'Q',
-        //     'K',
-        // ];
-        // const cardTypes = ['H', 'C', 'S', 'D'];
-
-        // const cardsDeck = cardTypes.flatMap((cardType) => {
-        //     return cardNumbers.map((cardNumber) => {
-        //         return `${cardType}-${cardNumber}`;
-        //     });
-        // });
-        const cardsDeck = CardConfig.CARD_DECK;
-        let shuffledDeck = [...cardsDeck];
-        let n = shuffledDeck.length;
-        for (let i = n - 1; i > 0; i--) {
-            let k = Math.floor(Math.random() * i);
-            let temp = shuffledDeck[i];
-            shuffledDeck[i] = shuffledDeck[k];
-            shuffledDeck[k] = temp;
-        }
-        let newShuffledDeck = [...shuffledDeck];
-        return function () {
-            return newShuffledDeck.pop();
-        };
+        if (playerA.score > playerB.score)
+            return { winner: 'A', win_desc: playerA.desc };
+        else if (playerA.score < playerB.score)
+            return { winner: 'B', win_desc: playerB.desc };
+        else return { winner: 'Draw' };
     }
 }

@@ -8,7 +8,7 @@ export class GameService {
     async findLiveGame() {
         const liveGame = await global.DB.Game.findOne({
             where: {
-                game_status: { [Op.ne]: 'result_declared' },
+                game_status: { [Op.ne]: 'completed' },
             },
             attributes: {
                 exclude: ['createdAt', 'updatedAt'],
@@ -24,7 +24,7 @@ export class GameService {
     async lastTenGames() {
         const gameResults = await global.DB.Game.findAll({
             where: {
-                game_status: 'result_declared',
+                game_status: 'completed',
             },
             attributes: [
                 'id',
