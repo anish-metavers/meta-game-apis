@@ -3,7 +3,7 @@ import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 const passwordValidator = require('password-validator');
 
 export class SignUpDTO {
-    @IsNotEmpty({ message: '$property is Required!!' })
+    @IsNotEmpty()
     name: String;
 
     @IsNotEmpty()
@@ -37,7 +37,7 @@ export const passwordSchema = new passwordValidator()
     .has()
     .lowercase(1, 'Password must contain a lowercase Character') // Must have lowercase letters
     .has()
-    .digits(2, 'Password must contain a Number') // Must have at least 2 digits
+    .digits(1, 'Password must contain a Number') // Must have at least 2 digits
     .has()
     .symbols(1, 'Password must contain a Symbol')
     .has()

@@ -18,7 +18,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
             typeof exception.getResponse() === 'string'
                 ? {
                       message: exception.getResponse(),
-                      status: exception.getStatus(),
+                      statusCode: exception.getStatus(),
                   }
                 : exception.getResponse(),
         );

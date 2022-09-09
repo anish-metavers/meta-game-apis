@@ -21,9 +21,9 @@ export class AuthGuard implements CanActivate {
         if (!token) {
             throw new HttpException(
                 {
-                    status: 'fail',
-                    code: 401,
+                    errorCode: 'E-0030',
                     message: 'Unauthenticated, no token found',
+                    statusCode: 401,
                 },
                 401,
             );
@@ -44,16 +44,24 @@ export class AuthGuard implements CanActivate {
                 ],
             });
 
-            if (!user) throw new HttpException('No User Found!!', 401);
+            if (!user)
+                throw new HttpException(
+                    {
+                        errorCode: 'E-0031',
+                        message: 'No User Found!!',
+                        statusCode: 401,
+                    },
+                    401,
+                );
 
             req.user = user;
             return true;
         } catch (error) {
             throw new HttpException(
                 {
+                    errorCode: 'E-0032',
+                    message: 'Invalid Token or Token Expired!!',
                     statusCode: 401,
-                    message: 'Invalid Token Provided!!',
-                    error,
                 },
                 401,
             );

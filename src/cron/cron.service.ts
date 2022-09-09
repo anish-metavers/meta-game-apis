@@ -92,15 +92,15 @@ export class CronService {
                 }
 
                 // Updating Game Status to "Processing Results"
-                else if (timeCounter === 51) {
-                    await Game.update({
-                        game_status: 'processing_result',
-                    });
-                    console.log('Processing Results');
-                }
+                // else if (timeCounter === 51) {
+                //     await Game.update({
+                //         game_status: 'processing_result',
+                //     });
+                //     console.log('Processing Results');
+                // }
 
                 // Updating Game Status to "Results Declared"
-                else if (timeCounter === 55) {
+                else if (timeCounter === 51) {
                     // Calling Cards Compare Function
                     const winnerData = this.compareCards(
                         Game.player_a_cards,

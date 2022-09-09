@@ -9,14 +9,28 @@ export class BetService {
         const { game_id, amount, option } = body;
 
         if (amount <= 0)
-            throw new HttpException('Amount must be greater than Zero.', 400);
+            throw new HttpException(
+                {
+                    errorCode: 'E-0020',
+                    message: 'Bet Amount must be greater than Zero.',
+                    statusCode: 400,
+                },
+                400,
+            );
 
         // Check if Game Exist
         const isGame = await global.DB.Game.findOne({
-            where: { id: game_id ,game_status: 'betting' },
+            where: { id: game_id, game_status: 'betting' },
         });
         if (!isGame)
-            throw new HttpException('No Game Found Or Betting Closed.', 400);
+            throw new HttpException(
+                {
+                    errorCode: 'E-0021',
+                    message: 'No Game Found Or Betting Closed.',
+                    statusCode: 400,
+                },
+                400,
+            );
 
         const checkUserBalance = await global.DB.User.findOne({
             where: { id: req['user'].id },
@@ -27,7 +41,14 @@ export class BetService {
                 checkUserBalance.exposure_balance <
             amount
         )
-            throw new HttpException('Not Enough Balance', 400);
+            throw new HttpException(
+                {
+                    errorCode: 'E-0022',
+                    message: 'Not Enough Balance',
+                    statusCode: 400,
+                },
+                400,
+            );
 
         const [bet] = await Promise.all([
             await global.DB.Bets.create({
