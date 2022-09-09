@@ -16,9 +16,6 @@ export class AuthService {
     async loginUser(@Body() body: LoginDTO) {
         const { email, password } = body;
 
-        // if (!email || !password)
-        //     throw new HttpException('All Fields are Required!!', 400);
-
         // Checking Email
         const user = await global.DB.User.findOne({
             where: {
@@ -40,6 +37,8 @@ export class AuthService {
             id: user.id,
             name: user.name,
             email: user.email,
+            wallet_balance: user.wallet_balance,
+            exposure_balance: user.exposure_balance,
         };
 
         // Generating Token
@@ -77,7 +76,8 @@ export class AuthService {
             name,
             email,
             password: passwordHash,
-            wallet_balance: 0,
+            wallet_balance: 10000,
+            exposure_balance: 0,
         });
 
         // Assigning Roles!!
@@ -103,7 +103,13 @@ export class AuthService {
         return {
             message: 'SignUp Successfully',
             token,
-            data: { id: newUser.id, name: newUser.name, email: newUser.email },
+            data: {
+                id: newUser.id,
+                name: newUser.name,
+                email: newUser.email,
+                wallet_balance: newUser.wallet_balance,
+                exposure_balance: newUser.exposure_balance,
+            },
         };
     }
 }

@@ -5,12 +5,12 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
-    async getUser() {
-        const user = await global.DB.User.findAll({
-            attributes: ['id', 'name', 'email'],
-        });
-        return user;
-    }
+    // async getUser() {
+    //     const user = await global.DB.User.findAll({
+    //         attributes: ['id', 'name', 'email'],
+    //     });
+    //     return user;
+    // }
 
     async createUser(@Body() body: CreateUser) {
         const { name, password, roles } = body;

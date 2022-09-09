@@ -25,6 +25,11 @@ const model = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
                 defaultValue: 0,
             },
+            exposure_balance: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: 0,
+            },
             password: {
                 type: DataTypes.STRING,
                 allowNull: false,

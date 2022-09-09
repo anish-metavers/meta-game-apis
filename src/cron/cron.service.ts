@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { Op } from 'sequelize';
+import { Op, literal } from 'sequelize';
 import Card from '../../utils/cards';
 import * as teenPattiScore from 'teenpattisolver';
 
@@ -60,8 +60,10 @@ export class CronService {
                 });
                 let timeCounter = await Game.current_time;
 
+                // TO BE REMOVED
+                // if (timeCounter === 5) await this.betSimulation(Game);
+
                 // Drawing Player A and B Cards One by One
-                // if (timeCounter >= 21 && timeCounter <= 46) {
                 if (
                     timeCounter === 21 ||
                     timeCounter === 26 ||
@@ -109,11 +111,12 @@ export class CronService {
                         ...winnerData,
                         result_timestamp: Date.now(),
                     });
+                    this.checkBets(Game);
                     console.log('Declare Results');
                 }
 
-                // Updating Game Status to "Completed"
-                else if (timeCounter === 59) {
+                // Updating Game Status to "Completed" and Clearing the Interval
+                else if (timeCounter >= 59) {
                     await Game.update({
                         game_status: 'completed',
                     });
@@ -128,6 +131,72 @@ export class CronService {
             console.log('--------------------------------');
         }
     }
+
+    async checkBets(Game: any) {
+        await global.DB.Bets.update(
+            { bet_result: 'win' },
+            {
+                where: {
+                    game_id: Game.id,
+                    bet_option: Game.winner,
+                },
+            },
+        );
+        await global.DB.Bets.update(
+            { bet_result: 'lose' },
+            {
+                where: {
+                    game_id: Game.id,
+                    bet_option: { [Op.ne]: Game.winner },
+                },
+            },
+        );
+
+        const bets = await global.DB.Bets.findAll({
+            where: {
+                game_id: Game.id,
+            },
+        });
+
+        for (const bet of bets) {
+            const user = await global.DB.User.findOne({
+                where: {
+                    id: bet.user_id,
+                },
+            });
+
+            const win_amount = bet.amount * bet.bet_odds - bet.amount;
+            const wallet_balance_literal =
+                bet.bet_result === 'win'
+                    ? `wallet_balance + ${win_amount}`
+                    : `wallet_balance - ${bet.amount}`;
+
+            await user.update({
+                wallet_balance: literal(wallet_balance_literal),
+                exposure_balance: literal(`exposure_balance - ${bet.amount}`),
+            });
+        }
+    }
+
+    // Just for Test purposes only
+    // async betSimulation(Game: any) {
+    //     await Promise.all([
+    //         await global.DB.Bets.create({
+    //             game_id: Game.id,
+    //             user_id: 1,
+    //             amount: 100,
+    //             bet_option:
+    //                 Math.floor(Math.random() * 10) % 2 === 0 ? 'A' : 'B',
+    //             bet_odds: 1.97,
+    //         }),
+    //         await global.DB.User.update(
+    //             {
+    //                 exposure_balance: literal(`exposure_balance + ${100}`),
+    //             },
+    //             { where: { id: 1 } },
+    //         ),
+    //     ]);
+    // }
 
     // Method to Check Who Wins the game
     compareCards(player_a_cards: String[], player_b_cards: String[]) {
