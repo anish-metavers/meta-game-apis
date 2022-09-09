@@ -1,9 +1,8 @@
 import { Injectable, Body, HttpException } from '@nestjs/common';
 import { LoginDTO, SignUpDTO, passwordSchema } from './dto/authDTO';
-import { Op } from 'sequelize';
-const jwt = require('jsonwebtoken');
-// import * as  jwt  from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
+import { ErrorConfig } from 'utils/config';
 
 @Injectable()
 export class AuthService {
@@ -25,8 +24,7 @@ export class AuthService {
         if (!user)
             throw new HttpException(
                 {
-                    errorCode: 'E-0010',
-                    message: 'No User found with this Email!!',
+                    ...ErrorConfig.EMAIL_NOT_FOUND,
                     statusCode: 400,
                 },
                 400,
@@ -37,8 +35,7 @@ export class AuthService {
         if (!isMatch)
             throw new HttpException(
                 {
-                    errorCode: 'E-0011',
-                    message: 'Incorrect Email Address OR Password!!',
+                    ...ErrorConfig.INVALID_EMAIL_PASSWORD,
                     statusCode: 400,
                 },
 
@@ -70,7 +67,7 @@ export class AuthService {
         if (isPassValid && isPassValid.length > 0)
             throw new HttpException(
                 {
-                    errorCode: 'E-0012',
+                    errorCode: ErrorConfig.PASSWORD_VALIDATION_FAILED.errorCode,
                     message: isPassValid[0].message,
                     statusCode: 400,
                 },
@@ -87,8 +84,7 @@ export class AuthService {
         if (user)
             throw new HttpException(
                 {
-                    errorCode: 'E-0013',
-                    message: 'User Already Exist with this Email!!',
+                    ...ErrorConfig.USER_ALREADY_EXISTS,
                     statusCode: 400,
                 },
                 400,

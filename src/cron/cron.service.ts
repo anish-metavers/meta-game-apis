@@ -81,14 +81,16 @@ export class CronService {
                     let indexObj = { 21: 0, 26: 1, 31: 2, 36: 3, 41: 4, 46: 5 };
                     let i = indexObj[tc];
 
-                    await Game.update({
-                        game_status: `card_drawn_${i + 1}`,
-                        [propName]: [
-                            ...Game[propName],
-                            `${cards.deck[i].number}${cards.deck[i].type}`,
-                        ],
-                    });
-                    console.log(`Draw-${i + 1}`);
+                    if (Game[propName].length !== 3) {
+                        await Game.update({
+                            game_status: `card_drawn_${i + 1}`,
+                            [propName]: [
+                                ...Game[propName],
+                                `${cards.deck[i].number}${cards.deck[i].type}`,
+                            ],
+                        });
+                        console.log(`Draw-${i + 1}`);
+                    }
                 }
 
                 // Updating Game Status to "Processing Results"

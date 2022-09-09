@@ -18,7 +18,7 @@ import { AuthGuard } from 'guards/auth.guard';
 import { PermissionGuard } from 'guards/role.guard';
 import { CreateUser, UpdateUser } from './dto/userDTO';
 import { UserService } from './user.service';
-import { Config } from 'utils/config';
+import { AccessConfig } from 'utils/config';
 
 @Controller('user')
 @UseGuards(AuthGuard)
@@ -38,7 +38,7 @@ export class UserController {
 
     @Post()
     @HttpCode(202)
-    @UseGuards(new PermissionGuard(Config.CREATE_ACCESS))
+    @UseGuards(new PermissionGuard(AccessConfig.CREATE_ACCESS))
     async createUser(@Req() req: Request, @Body() body: CreateUser) {
         const createdUser = await this.userService.createUser(body);
         return {
@@ -49,7 +49,7 @@ export class UserController {
 
     @Patch(':id')
     @HttpCode(202)
-    @UseGuards(new PermissionGuard(Config.UPDATE_ACCESS))
+    @UseGuards(new PermissionGuard(AccessConfig.UPDATE_ACCESS))
     async updateUser(
         @Param('id') id: string,
         @Req() req: Request,
@@ -64,7 +64,7 @@ export class UserController {
 
     @Delete(':id')
     @HttpCode(202)
-    @UseGuards(new PermissionGuard(Config.DELETE_ACCESS))
+    @UseGuards(new PermissionGuard(AccessConfig.DELETE_ACCESS))
     async deleteUser(@Param('id') id: string, @Req() req: Request) {
         const createdUser = await this.userService.deleteUser(+id);
         return {

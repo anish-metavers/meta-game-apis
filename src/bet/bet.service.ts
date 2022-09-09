@@ -2,6 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { CreateBet } from './dto/createBet.dto';
 import { Request } from 'express';
 import { literal } from 'sequelize';
+import { ErrorConfig } from 'utils/config';
 
 @Injectable()
 export class BetService {
@@ -11,8 +12,7 @@ export class BetService {
         if (amount <= 0)
             throw new HttpException(
                 {
-                    errorCode: 'E-0020',
-                    message: 'Bet Amount must be greater than Zero.',
+                    ...ErrorConfig.BET_GREATER_THAN_ZERO,
                     statusCode: 400,
                 },
                 400,
@@ -25,8 +25,7 @@ export class BetService {
         if (!isGame)
             throw new HttpException(
                 {
-                    errorCode: 'E-0021',
-                    message: 'No Game Found Or Betting Closed.',
+                    ...ErrorConfig.GAME_NOT_FOUND_OR_BETTING_CLOSED,
                     statusCode: 400,
                 },
                 400,
@@ -43,8 +42,7 @@ export class BetService {
         )
             throw new HttpException(
                 {
-                    errorCode: 'E-0022',
-                    message: 'Not Enough Balance',
+                    ...ErrorConfig.NOT_ENOUGH_BALANCE,
                     statusCode: 400,
                 },
                 400,

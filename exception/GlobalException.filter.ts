@@ -6,6 +6,7 @@ import {
     HttpStatus,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
+import { ErrorConfig } from 'utils/config';
 
 @Catch()
 export class GlobalExceptionsFilter implements ExceptionFilter {
@@ -23,9 +24,9 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
         console.log(exception);
 
         const responseBody = {
+            ...ErrorConfig.INTERNAL_SERVER_ERROR,
             error: exception.toString(),
-            message: 'Something went wrong on our End',
-            status: httpStatus,
+            statusCode: httpStatus,
         };
 
         httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
