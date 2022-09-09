@@ -4,7 +4,8 @@ import {
     ExecutionContext,
     HttpException,
 } from '@nestjs/common';
-const jwt = require('jsonwebtoken');
+import { ErrorConfig } from 'utils/config';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -21,8 +22,7 @@ export class AuthGuard implements CanActivate {
         if (!token) {
             throw new HttpException(
                 {
-                    errorCode: 'E-0030',
-                    message: 'Unauthenticated, no token found',
+                    ...ErrorConfig.NO_TOKEN_FOUND,
                     statusCode: 401,
                 },
                 401,
@@ -47,8 +47,7 @@ export class AuthGuard implements CanActivate {
             if (!user)
                 throw new HttpException(
                     {
-                        errorCode: 'E-0031',
-                        message: 'No User Found!!',
+                        ...ErrorConfig.NO_USER_FOUND,
                         statusCode: 401,
                     },
                     401,
@@ -59,8 +58,7 @@ export class AuthGuard implements CanActivate {
         } catch (error) {
             throw new HttpException(
                 {
-                    errorCode: 'E-0032',
-                    message: 'Invalid Token or Token Expired!!',
+                    ...ErrorConfig.INVALID_TOKEN,
                     statusCode: 401,
                 },
                 401,
