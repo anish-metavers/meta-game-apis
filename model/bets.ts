@@ -28,6 +28,10 @@ const model = (sequelize: any, DataTypes: any) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+            bet_odds: {
+                type: DataTypes.FLOAT,
+                allowNull: true,
+            },
             bet_result: {
                 type: DataTypes.STRING,
                 allowNull: true,

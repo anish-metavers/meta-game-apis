@@ -1,6 +1,14 @@
+import { IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
 export class CreateBet {
-    amount: Number;
-    game_id: Number;
-    option: String;
-    time: String;
+    @IsNotEmpty()
+    @IsNumber()
+    amount: number;
+
+    @IsNotEmpty()
+    @IsNumber()
+    game_id: number;
+
+    @IsNotEmpty()
+    @IsString()
+    option: string;
 }

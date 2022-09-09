@@ -28,11 +28,11 @@ export class UserController {
 
     @Get()
     @HttpCode(202)
-    @UseGuards(new PermissionGuard(Config.READ_ACCESS))
+    // @UseGuards(new PermissionGuard(Config.READ_ACCESS))
     async getUser(@Req() req: Request) {
         return {
-            user: req['user'],
-            data: await this.userService.getUser(),
+            message: 'User data fetched successfully',
+            data: req['user'],
         };
     }
 

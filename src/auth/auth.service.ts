@@ -16,9 +16,6 @@ export class AuthService {
     async loginUser(@Body() body: LoginDTO) {
         const { email, password } = body;
 
-        // if (!email || !password)
-        //     throw new HttpException('All Fields are Required!!', 400);
-
         // Checking Email
         const user = await global.DB.User.findOne({
             where: {
@@ -26,13 +23,25 @@ export class AuthService {
             },
         });
         if (!user)
-            throw new HttpException('No User found with this Email!!', 400);
+            throw new HttpException(
+                {
+                    errorCode: 'E-0010',
+                    message: 'No User found with this Email!!',
+                    statusCode: 400,
+                },
+                400,
+            );
 
         // Checking Pasword
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch)
             throw new HttpException(
-                'Incorrect Email Address OR Password!!',
+                {
+                    errorCode: 'E-0011',
+                    message: 'Incorrect Email Address OR Password!!',
+                    statusCode: 400,
+                },
+
                 400,
             );
 
@@ -40,6 +49,8 @@ export class AuthService {
             id: user.id,
             name: user.name,
             email: user.email,
+            wallet_balance: user.wallet_balance,
+            exposure_balance: user.exposure_balance,
         };
 
         // Generating Token
@@ -57,7 +68,14 @@ export class AuthService {
         });
 
         if (isPassValid && isPassValid.length > 0)
-            throw new HttpException(isPassValid[0].message, 400);
+            throw new HttpException(
+                {
+                    errorCode: 'E-0012',
+                    message: isPassValid[0].message,
+                    statusCode: 400,
+                },
+                400,
+            );
 
         const user = await global.DB.User.findOne({
             where: {
@@ -68,7 +86,11 @@ export class AuthService {
 
         if (user)
             throw new HttpException(
-                'User Already Exist with this Email!!',
+                {
+                    errorCode: 'E-0013',
+                    message: 'User Already Exist with this Email!!',
+                    statusCode: 400,
+                },
                 400,
             );
         const passwordHash = await bcrypt.hash(password, 10);
@@ -77,7 +99,8 @@ export class AuthService {
             name,
             email,
             password: passwordHash,
-            wallet_balance: 0,
+            wallet_balance: 10000,
+            exposure_balance: 0,
         });
 
         // Assigning Roles!!
@@ -103,7 +126,13 @@ export class AuthService {
         return {
             message: 'SignUp Successfully',
             token,
-            data: { id: newUser.id, name: newUser.name, email: newUser.email },
+            data: {
+                id: newUser.id,
+                name: newUser.name,
+                email: newUser.email,
+                wallet_balance: newUser.wallet_balance,
+                exposure_balance: newUser.exposure_balance,
+            },
         };
     }
 }
