@@ -6,6 +6,27 @@ import { ErrorConfig } from 'utils/config';
 
 @Injectable()
 export class BetService {
+    async betResults(game_id: number, req: Request) {
+        const userBets = await global.DB.Bets.findAll({
+            where: {
+                user_id: req['user'].id,
+                game_id: game_id,
+            },
+            attributes: [
+                'id',
+                'game_id',
+                'user_id',
+                'amount',
+                'bet_result',
+                'bet_odds',
+            ],
+        });
+
+        return {
+            message: 'Bet Results fetched successfully',
+            data: userBets,
+        };
+    }
     async createBet(req: Request, body: CreateBet) {
         const { game_id, amount, option } = body;
 
