@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    Post,
+    Req,
+    UseGuards,
+} from '@nestjs/common';
 import { Request } from 'express';
 import { AuthGuard } from 'guards/auth.guard';
 import { BetService } from './bet.service';
@@ -12,5 +20,10 @@ export class BetController {
     @Post()
     createBet(@Body() body: CreateBet, @Req() req: Request) {
         return this.betService.createBet(req, body);
+    }
+
+    @Get('/result/:game_id')
+    betResults(@Param('game_id') game_id: string, @Req() req: Request) {
+        return this.betService.betResults(+game_id, req);
     }
 }

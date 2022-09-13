@@ -61,7 +61,8 @@ export class CronService {
                 let timeCounter = await Game.current_time;
 
                 // TO BE REMOVED
-                // if (timeCounter === 5) await this.betSimulation(Game);
+                // if (timeCounter === 5) await this.betSimulation(Game, 'A');
+                // if (timeCounter === 6) await this.betSimulation(Game, 'B');
 
                 // Drawing Player A and B Cards One by One
                 if (
@@ -181,14 +182,13 @@ export class CronService {
     }
 
     // Just for Test purposes only
-    // async betSimulation(Game: any) {
+    // async betSimulation(Game: any, option: string) {
     //     await Promise.all([
     //         await global.DB.Bets.create({
     //             game_id: Game.id,
     //             user_id: 1,
     //             amount: 100,
-    //             bet_option:
-    //                 Math.floor(Math.random() * 10) % 2 === 0 ? 'A' : 'B',
+    //             bet_option: option,
     //             bet_odds: 1.97,
     //         }),
     //         await global.DB.User.update(

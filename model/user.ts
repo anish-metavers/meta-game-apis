@@ -34,6 +34,11 @@ const model = (sequelize: any, DataTypes: any) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+            status: {
+                type: DataTypes.ENUM('1', '0'),
+                allowNull: false,
+                defaultValue: '1',
+            },
             createdAt: { type: DataTypes.DATE, field: 'created_at' },
             updatedAt: { type: DataTypes.DATE, field: 'updated_at' },
         },
