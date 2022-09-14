@@ -3,7 +3,7 @@ import { BetService } from './bet.service';
 import { BetController } from './bet.controller';
 
 @Module({
-  controllers: [BetController],
-  providers: [BetService]
+    controllers: [BetController],
+    providers: [BetService],
 })
 export class BetModule {}
