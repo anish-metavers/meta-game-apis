@@ -17,6 +17,11 @@ export default class Cards {
     ];
     cardTypes = ['H', 'C', 'S', 'D'];
 
+    constructor(shuffle: boolean) {
+        this.makeCards();
+        if (shuffle) this.shuffleCards();
+    }
+
     makeCards() {
         for (let number of this.cardNumbers) {
             for (let type of this.cardTypes) {
@@ -29,7 +34,6 @@ export default class Cards {
     }
 
     shuffleCards() {
-        this.makeCards();
         let n = this.deck.length;
         for (let i = n - 1; i > 0; i--) {
             let randIdx = Math.floor(Math.random() * i);
