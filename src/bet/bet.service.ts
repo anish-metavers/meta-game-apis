@@ -54,7 +54,7 @@ export class BetService {
 
         const checkUserBalance = await global.DB.User.findOne({
             where: { id: req['user'].id },
-            attributes: ['id', 'name', 'wallet_balance'],
+            attributes: ['id', 'name', 'wallet_balance', 'exposure_balance'],
         });
         if (
             checkUserBalance.wallet_balance -
