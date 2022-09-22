@@ -1,41 +1,41 @@
 import { Model } from 'sequelize';
 
-class Bets extends Model {}
+class Upi extends Model {}
 
 const model = (sequelize: any, DataTypes: any) => {
-    Bets.init(
+    Upi.init(
         {
             // Model attributes are defined here
             id: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.BIGINT,
                 autoIncrement: true,
                 allowNull: false,
                 primaryKey: true,
             },
-            game_id: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
             user_id: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.BIGINT.UNSIGNED,
                 allowNull: false,
             },
-            amount: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
-            bet_option: {
+            name: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            bet_odds: {
-                type: DataTypes.DECIMAL,
-                allowNull: true,
-            },
-            bet_result: {
+            vpa: {
                 type: DataTypes.STRING,
-                allowNull: true,
-                defaultValue: null,
+                allowNull: false,
+            },
+            upi_type: {
+                type: DataTypes.ENUM('Google Pay', 'Paytm', 'Bhim Upi'),
+                allowNull: false,
+            },
+            priority: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            status: {
+                type: DataTypes.ENUM('1', '0'),
+                allowNull: false,
+                defaultValue: '1',
             },
             createdAt: { type: DataTypes.DATE, field: 'created_at' },
             updatedAt: { type: DataTypes.DATE, field: 'updated_at' },
@@ -43,11 +43,11 @@ const model = (sequelize: any, DataTypes: any) => {
         {
             timestamps: true,
             sequelize,
-            modelName: 'Bets',
-            tableName: 'bets',
+            modelName: 'Upi',
+            tableName: 'upi_details',
         },
     );
-    return Bets;
+    return Upi;
 };
 
 export default model;

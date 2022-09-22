@@ -12,7 +12,7 @@ export class CronService {
     private Timer = 0;
     private cards = new Card(true);
 
-    @Cron('*/1 * * * * *')
+    // @Cron('*/1 * * * * *')
     async cronForTeenPatti() {
         try {
             // Create a new Shuffled Deck

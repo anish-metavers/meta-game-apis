@@ -11,6 +11,10 @@ export const ErrorConfig = {
         message: 'Something went wrong on our End',
     },
 
+    API_BODY_BASIC_VALIDATION: {
+        errorCode: 'E-0002',
+    },
+
     EMAIL_NOT_FOUND: {
         errorCode: 'E-0010',
         message: 'No User found with this Email!!',
