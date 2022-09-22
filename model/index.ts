@@ -6,6 +6,7 @@ import Permissions from './permissions';
 import RolesPermissions from './rolesPermissions';
 import Game from './game';
 import Bets from './bets';
+import GameConfig from './gameConfig';
 
 const DB = async () => {
     const sequelize = new Sequelize(
@@ -47,6 +48,7 @@ const DB = async () => {
             RolesPermissions: RolesPermissions(sequelize, DataTypes),
             Game: Game(sequelize, DataTypes),
             Bets: Bets(sequelize, DataTypes),
+            GameConfig: GameConfig(sequelize, DataTypes),
         };
 
         // // ------ DANGER TO UNCOMMENT ------
