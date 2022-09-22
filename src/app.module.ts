@@ -8,6 +8,7 @@ import { PermissionModule } from './permission/permission.module';
 import { CronModule } from './cron/cron.module';
 import { GameModule } from './game/game.module';
 import { BetModule } from './bet/bet.module';
+import { GameConfigModule } from './game-config/game-config.module';
 @Module({
     imports: [
         ConfigModule.forRoot(),
@@ -19,6 +20,7 @@ import { BetModule } from './bet/bet.module';
         CronModule,
         GameModule,
         BetModule,
+        GameConfigModule,
     ],
     controllers: [],
     providers: [],
