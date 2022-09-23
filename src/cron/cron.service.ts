@@ -11,16 +11,14 @@ export class CronService {
     private Game = null;
     private Timer = 0;
     private cards = new Card(true);
+    private BETTING_TIME = 30; // In Seconds
+    private CARD_DRAWN_INTERVAL = 5; // In Seconds
 
     // @Cron('*/1 * * * * *')
     async cronForTeenPatti() {
         try {
-            // Create a new Shuffled Deck
-            // let cards = new Card();
-            // cards.shuffleCards();
-
             if (!this.Game) {
-                // Game is Null
+                // If Game is Null
 
                 // Check if am Incomplete Game is Available
                 let oldGame = await global.DB.Game.findOne({
@@ -51,20 +49,26 @@ export class CronService {
                         player_a_cards: [],
                         player_b_cards: [],
                         current_time: 0,
+                        countdown_timer: 30,
                         game_status: 'betting',
                     });
                 }
-
                 this.Timer = this.Game.current_time;
             }
 
             // Updating Timer Count in Game Object
             await this.Game.update({
                 current_time: ++this.Timer,
+                countdown_timer:
+                    this.Game.countdown_timer > 0
+                        ? --this.Game.countdown_timer
+                        : this.Game.countdown_timer,
             });
 
             this.logger.debug('--------------------');
-            this.logger.debug(`Game Id: ${this.Game.id} Timer: ${this.Timer}`);
+            this.logger.debug(
+                `Game Id: ${this.Game.id} T: ${this.Timer} CT: ${this.Game.countdown_timer}`,
+            );
 
             // TO BE REMOVED
             // if (timeCounter === 5) await this.betSimulation(Game, 'A');
@@ -72,20 +76,36 @@ export class CronService {
 
             // Drawing Player A and B Cards One by One
             if (
-                this.Timer === 21 ||
-                this.Timer === 26 ||
-                this.Timer === 31 ||
-                this.Timer === 36 ||
-                this.Timer === 41 ||
-                this.Timer === 46
+                this.Timer ===
+                    this.BETTING_TIME + this.CARD_DRAWN_INTERVAL * 0 ||
+                this.Timer ===
+                    this.BETTING_TIME + this.CARD_DRAWN_INTERVAL * 1 ||
+                this.Timer ===
+                    this.BETTING_TIME + this.CARD_DRAWN_INTERVAL * 2 ||
+                this.Timer ===
+                    this.BETTING_TIME + this.CARD_DRAWN_INTERVAL * 3 ||
+                this.Timer ===
+                    this.BETTING_TIME + this.CARD_DRAWN_INTERVAL * 4 ||
+                this.Timer === this.BETTING_TIME + this.CARD_DRAWN_INTERVAL * 5
             ) {
                 let tc = this.Timer;
+                let bt = this.BETTING_TIME;
+                let cdt = this.CARD_DRAWN_INTERVAL;
                 let propName =
-                    tc === 21 || tc === 31 || tc === 41
+                    tc === bt + cdt * 0 ||
+                    tc === bt + cdt * 2 ||
+                    tc === bt + cdt * 4
                         ? 'player_a_cards'
                         : 'player_b_cards';
 
-                let indexObj = { 21: 0, 26: 1, 31: 2, 36: 3, 41: 4, 46: 5 };
+                let indexObj = {
+                    [bt + cdt * 0]: 0,
+                    [bt + cdt * 1]: 1,
+                    [bt + cdt * 2]: 2,
+                    [bt + cdt * 3]: 3,
+                    [bt + cdt * 4]: 4,
+                    [bt + cdt * 5]: 5,
+                };
                 let i = indexObj[tc];
 
                 if (this.Game[propName].length !== 3) {
@@ -101,7 +121,10 @@ export class CronService {
             }
 
             // Updating Game Status to "Results Declared"
-            else if (this.Timer === 51) {
+            else if (
+                this.Timer ===
+                this.BETTING_TIME + this.CARD_DRAWN_INTERVAL * 6
+            ) {
                 // Calling Cards Compare Function
                 const winnerData = this.compareCards(
                     this.Game.player_a_cards,
@@ -118,13 +141,16 @@ export class CronService {
             }
 
             // Updating Game Status to "Completed" and Clearing the Interval
-            else if (this.Timer >= 59) {
+            else if (
+                this.Timer >=
+                this.BETTING_TIME + this.CARD_DRAWN_INTERVAL * 6 + 10
+            ) {
                 await this.Game.update({
                     game_status: 'completed',
                 });
                 this.logger.debug('Game Completed');
 
-                // Renew the Variables
+                // Renew the Variables for next game
                 this.Game = null;
                 this.Timer = 0;
                 this.cards = new Card(true);
