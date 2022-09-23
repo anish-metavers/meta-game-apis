@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsNumber, IsNumberString, Matches } from 'class-validator';
+import {
+    IsNotEmpty,
+    IsNumber,
+    IsNumberString,
+    Matches,
+    MaxLength,
+    MinLength,
+} from 'class-validator';
 
 export class CreateBankAccountDto {
     @IsNotEmpty()
@@ -7,6 +14,8 @@ export class CreateBankAccountDto {
     @IsNotEmpty()
     bankName: string;
 
+    @MinLength(8)
+    @MaxLength(16)
     @IsNumberString({}, { message: 'Account Number is not Valid' })
     @IsNotEmpty()
     accountNumber: string;

@@ -16,7 +16,7 @@ export class BankAccountService {
             where: {
                 user_id: req['user'].id,
                 account_no: accountNumber,
-                ifsc_code: ifscCode,
+                // ifsc_code: ifscCode,
                 status: '1',
             },
             attributes: ['id'],
@@ -111,7 +111,9 @@ export class BankAccountService {
             accountType, // TBD
             isPrimary, // TBD
         } = updateBankAccountDto;
-        const ifscCode = updateBankAccountDto.ifscCode.toUpperCase();
+        const ifscCode = updateBankAccountDto.ifscCode
+            ? updateBankAccountDto.ifscCode.toUpperCase()
+            : undefined;
 
         const bankAccount = await global.DB.BankAccount.findOne({
             where: {
@@ -131,21 +133,18 @@ export class BankAccountService {
             status: '1',
         };
         if (accountNumber) otherBankFilter['account_no'] = accountNumber;
-        if (ifscCode) otherBankFilter['ifsc_code'] = ifscCode;
-
-        console.log(otherBankFilter);
+        // if (ifscCode) otherBankFilter['ifsc_code'] = ifscCode;
 
         const isOtherBankAccount = await global.DB.BankAccount.findOne({
             where: otherBankFilter,
             attributes: ['id'],
         });
-        console.log(isOtherBankAccount);
 
         if (isOtherBankAccount)
             throw new HttpException(
                 {
                     message:
-                        'Other Bank account exists with this Account Number or Ifsc Code',
+                        'A Bank account already exists with this Account Number',
                 },
                 400,
             );
