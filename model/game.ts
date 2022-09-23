@@ -28,6 +28,10 @@ const model = (sequelize: any, DataTypes: any) => {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },
+            countdown_timer: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
             winner: {
                 type: DataTypes.ENUM('A', 'B', 'Draw'),
                 allowNull: true,
