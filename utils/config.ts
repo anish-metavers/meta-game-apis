@@ -61,4 +61,14 @@ export const ErrorConfig = {
         errorCode: 'E-0032',
         message: 'Invalid Token or Token Expired!!',
     },
+
+    BANK_NOT_FOUND: {
+        errorCode: 'E-0041',
+        message: 'Bank Account not Found!!',
+    },
+
+    BANK_ALREADY_EXIST: {
+        errorCode: 'E-0042',
+        message: 'Bank Account already Exist!!',
+    },
 };

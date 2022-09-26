@@ -3,6 +3,7 @@ import { Request } from 'express';
 import { CreateBankAccountDto } from './dto/create-bank-account.dto';
 import { UpdateBankAccountDto } from './dto/update-bank-account.dto';
 import { Op } from 'sequelize';
+import { ErrorConfig } from 'utils/config';
 
 @Injectable()
 export class BankAccountService {
@@ -25,9 +26,7 @@ export class BankAccountService {
         if (isBankAccountExist) {
             // Throw HttpError Msg: Bank Account already exists
             throw new HttpException(
-                {
-                    message: 'Bank Account already exists',
-                },
+                { ...ErrorConfig.BANK_ALREADY_EXIST, statusCode: 400 },
                 400,
             );
         }
@@ -99,20 +98,11 @@ export class BankAccountService {
         };
     }
 
-    async update(
-        req: Request,
-        id: number,
-        updateBankAccountDto: UpdateBankAccountDto,
-    ) {
-        const {
-            name, // required
-            bankName, // required
-            accountNumber, // required
-            accountType, // TBD
-            isPrimary, // TBD
-        } = updateBankAccountDto;
-        const ifscCode = updateBankAccountDto.ifscCode
-            ? updateBankAccountDto.ifscCode.toUpperCase()
+    async update(req: Request, id: number, updateDto: UpdateBankAccountDto) {
+        const { name, bankName, accountNumber, accountType, isPrimary } =
+            updateDto;
+        const ifscCode = updateDto.ifscCode
+            ? updateDto.ifscCode.toUpperCase()
             : undefined;
 
         const bankAccount = await global.DB.BankAccount.findOne({
@@ -125,7 +115,10 @@ export class BankAccountService {
         });
 
         if (!bankAccount)
-            throw new HttpException({ message: 'Bank account not found' }, 400);
+            throw new HttpException(
+                { ...ErrorConfig.BANK_NOT_FOUND, statusCode: 400 },
+                400,
+            );
 
         let otherBankFilter = {
             id: { [Op.ne]: bankAccount.id },
@@ -142,10 +135,7 @@ export class BankAccountService {
 
         if (isOtherBankAccount)
             throw new HttpException(
-                {
-                    message:
-                        'A Bank account already exists with this Account Number',
-                },
+                { ...ErrorConfig.BANK_ALREADY_EXIST, statusCode: 400 },
                 400,
             );
 
@@ -184,7 +174,10 @@ export class BankAccountService {
         });
 
         if (!bankAccount)
-            throw new HttpException({ message: 'Bank account not found' }, 400);
+            throw new HttpException(
+                { ...ErrorConfig.BANK_NOT_FOUND, statusCode: 400 },
+                400,
+            );
 
         await bankAccount.update({
             status: '0',
