@@ -87,4 +87,43 @@ export class BetService {
             data: bet,
         };
     }
+
+    // Version 1.0 Basic
+    async betReport(req: Request, body: any) {
+        let { limit, page } = body;
+        limit = limit || 100;
+        page = page || 1;
+
+        let filter = {
+            user_id: req['user'].id,
+        };
+
+        const totalItems = await global.DB.Bets.count({ where: filter });
+        const offset = limit * (page - 1);
+        const totalPages = Math.ceil(totalItems / limit);
+
+        const userBets = await global.DB.Bets.findAll({
+            where: filter,
+            attributes: [
+                'id',
+                'game_id',
+                'user_id',
+                'amount',
+                'bet_result',
+                'bet_odds',
+                'bet_option',
+            ],
+            limit,
+            offset,
+        });
+
+        return {
+            message: 'Bets data fetched successfully',
+            data: userBets,
+            limit,
+            page,
+            totalItems,
+            totalPages,
+        };
+    }
 }
