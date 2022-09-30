@@ -110,7 +110,7 @@ export class AuthService {
 
         // Creating an Entry in UserLog
         await global.DB.UserLog.create({
-            user_id: user.id,
+            user_id: newUser.id,
             ip_address:
                 req.headers['x-forwarded-for'] || req.socket.remoteAddress,
             activity: 'login',

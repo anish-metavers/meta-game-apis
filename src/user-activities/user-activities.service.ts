@@ -15,7 +15,7 @@ export class UserActivitiesService {
         dateTo = moment(dateTo).add(1, 'days').format('YYYY-MM-DD');
 
         let filter = {
-            id: req['user'].id,
+            user_id: req['user'].id,
             activity,
             createdAt: {
                 [Op.and]: [{ [Op.gte]: dateFrom }, { [Op.lt]: dateTo }],
