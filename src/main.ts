@@ -4,6 +4,7 @@ import DB from '../model/index';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
+    await DB();
     const app = await NestFactory.create(AppModule);
     app.enableCors();
     app.setGlobalPrefix('api');
@@ -12,4 +13,3 @@ async function bootstrap() {
 }
 
 bootstrap();
-DB();

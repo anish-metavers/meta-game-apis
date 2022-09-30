@@ -73,6 +73,15 @@ export class UserService {
             password: passwordHash,
         });
 
+        // Creating an Entry in UserLog
+        await global.DB.UserLog.create({
+            user_id: user.id,
+            ip_address:
+                req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+            activity: 'change_password',
+            status: '1',
+        });
+
         return {
             message: 'Password changed successfully',
         };

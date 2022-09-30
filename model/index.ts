@@ -7,6 +7,7 @@ import RolesPermissions from './rolesPermissions';
 import Game from './game';
 import Bets from './bets';
 import GameConfig from './gameConfig';
+import UserLog from './userLog';
 
 const DB = async () => {
     const sequelize = new Sequelize(
@@ -49,7 +50,15 @@ const DB = async () => {
             Game: Game(sequelize, DataTypes),
             Bets: Bets(sequelize, DataTypes),
             GameConfig: GameConfig(sequelize, DataTypes),
+            UserLog: UserLog(sequelize, DataTypes),
         };
+
+        /// Setting the association of model
+        Object.keys(db).forEach((modelName) => {
+            if (db[modelName].associate) {
+                db[modelName].associate(db);
+            }
+        });
 
         // // ------ DANGER TO UNCOMMENT ------
         // await sequelize.sync({ alter: true });
