@@ -3,6 +3,7 @@ import { LoginDTO, SignUpDTO, passwordSchema } from './dto/authDTO';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 import { ErrorConfig } from 'utils/config';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +13,7 @@ export class AuthService {
         });
     }
 
-    async loginUser(@Body() body: LoginDTO) {
+    async loginUser(@Body() body: LoginDTO, req: Request) {
         const { email, password } = body;
 
         // Checking Email
@@ -30,7 +31,7 @@ export class AuthService {
                 400,
             );
 
-        // Checking Pasword
+        // Checking Password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch)
             throw new HttpException(
@@ -38,7 +39,6 @@ export class AuthService {
                     ...ErrorConfig.INVALID_EMAIL_PASSWORD,
                     statusCode: 400,
                 },
-
                 400,
             );
 
@@ -50,13 +50,22 @@ export class AuthService {
             exposure_balance: user.exposure_balance,
         };
 
+        // Creating an Entry in UserLog
+        await global.DB.UserLog.create({
+            user_id: user.id,
+            ip_address:
+                req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+            activity: 'login',
+            status: '1',
+        });
+
         // Generating Token
         const token = this.createJWT(userData.id, userData.email);
 
         return { message: 'Login Successfully', data: userData, token };
     }
 
-    async signUpUser(@Body() body: SignUpDTO) {
+    async signUpUser(@Body() body: SignUpDTO, req: Request) {
         const { name, password, roles } = body;
         const email = body.email.toLowerCase();
 
@@ -97,6 +106,15 @@ export class AuthService {
             password: passwordHash,
             wallet_balance: 10000,
             exposure_balance: 0,
+        });
+
+        // Creating an Entry in UserLog
+        await global.DB.UserLog.create({
+            user_id: user.id,
+            ip_address:
+                req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+            activity: 'login',
+            status: '1',
         });
 
         // Assigning Roles!!
