@@ -28,6 +28,16 @@ export const ErrorConfig = {
         message: 'User Already Exist with this Email!!',
     },
 
+    CONFIRM_PASS_NOT_MATCH: {
+        errorCode: 'E-0014',
+        message: 'New Password and Confirm Password does not match',
+    },
+
+    INVALID_OLD_PASS: {
+        errorCode: 'E-0015',
+        message: 'Invalid Old Password',
+    },
+
     BET_GREATER_THAN_ZERO: {
         errorCode: 'E-0020',
         message: 'Bet Amount must be greater than Zero.',
