@@ -16,7 +16,7 @@ import { HttpExceptionFilter } from 'exception/HttpException.filter';
 import { Request } from 'express';
 import { AuthGuard } from 'guards/auth.guard';
 import { PermissionGuard } from 'guards/role.guard';
-import { CreateUser, UpdateUser } from './dto/userDTO';
+import { ChangePassword, CreateUser, UpdateUser } from './dto/userDTO';
 import { UserService } from './user.service';
 import { AccessConfig } from 'utils/config';
 
@@ -34,6 +34,14 @@ export class UserController {
             message: 'User data fetched successfully',
             data: req['user'],
         };
+    }
+
+    @Post('/change-password')
+    async changePassword(
+        @Req() req: Request,
+        @Body() changePassword: ChangePassword,
+    ) {
+        return this.userService.changePassword(req, changePassword);
     }
 
     @Post()
