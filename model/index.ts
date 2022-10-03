@@ -20,7 +20,6 @@ const DB = async () => {
         process.env.IS_PROD === 'true'
             ? process.env.PROD_MYSQL_PASSWORD
             : process.env.LOCAL_MYSQL_PASSWORD,
-
         {
             host:
                 process.env.IS_PROD === 'true'
