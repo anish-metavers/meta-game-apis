@@ -20,23 +20,23 @@ const model = (sequelize: any, DataTypes: any) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            mobile: {
+            mobile: { // NEW
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            country_code: {
+            country_code: { // NEW
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            alt_email: {
+            alt_email: { // NEW
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            alt_mobile: {
+            alt_mobile: { // NEW
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            alt_mobile_country_code: {
+            alt_mobile_country_code: { // NEW
                 type: DataTypes.STRING,
                 allowNull: true,
             },
@@ -50,39 +50,24 @@ const model = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
                 defaultValue: 0,
             },
-            credentials_expired: {
-                type: DataTypes.ENUM('0', '1'),
-                allowNull: false,
-                defaultValue: '1',
-            },
-            deposit_exposure: {
+            deposit_exposure: { // NEW
                 type: DataTypes.DECIMAL,
-                allowNull: false,
+                allowNull: true,
                 defaultValue: 0,
             },
-            hide_account: {
-                type: DataTypes.ENUM('0', '1'),
-                allowNull: false,
-                defaultValue: '1',
-            },
-            mac_address: {
+            mac_address: { // NEW
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            remark: {
+            remark: { // NEW
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            role_id: {
+            role_id: { // NEW
                 type: DataTypes.INTEGER,
                 allowNull: true,
             },
-            verified: {
-                type: DataTypes.ENUM('0', '1'),
-                allowNull: false,
-                defaultValue: '0',
-            },
-            created_by_id: {
+            created_by_id: { // NEW
                 type: DataTypes.INTEGER,
                 allowNull: true,
                 defaultValue: 0,
@@ -91,21 +76,36 @@ const model = (sequelize: any, DataTypes: any) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            account_locked: {
-                type: DataTypes.ENUM('0', '1'),
-                allowNull: false,
-                defaultValue: '1',
-            },
-            account_expired: {
-                type: DataTypes.ENUM('0', '1'),
-                allowNull: false,
-                defaultValue: '1',
-            },
             status: {
                 type: DataTypes.ENUM('1', '0'),
                 allowNull: false,
                 defaultValue: '1',
             },
+            // credentials_expired_status: { // NEW
+            //     type: DataTypes.ENUM('0', '1'),
+            //     allowNull: false,
+            //     defaultValue: '1',
+            // },
+            // hide_account: { // NEW
+            //     type: DataTypes.ENUM('0', '1'),
+            //     allowNull: false,
+            //     defaultValue: '1',
+            // },
+            // verified: { // NEW
+            //     type: DataTypes.ENUM('0', '1'),
+            //     allowNull: false,
+            //     defaultValue: '0',
+            // },
+            // account_locked: { // NEW
+            //     type: DataTypes.ENUM('0', '1'),
+            //     allowNull: false,
+            //     defaultValue: '1',
+            // },
+            // account_expired: { // NEW
+            //     type: DataTypes.ENUM('0', '1'),
+            //     allowNull: false,
+            //     defaultValue: '1',
+            // },
             createdAt: { type: DataTypes.DATE, field: 'created_at' },
             updatedAt: { type: DataTypes.DATE, field: 'updated_at' },
         },
