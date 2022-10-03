@@ -14,14 +14,15 @@ export class UserActivitiesService {
         dateFrom = moment(dateFrom).format('YYYY-MM-DD');
         dateTo = moment(dateTo).add(1, 'days').format('YYYY-MM-DD');
 
-        let filter = {
+        let filter: any = {
             user_id: req['user'].id,
-            activity,
             createdAt: {
                 [Op.and]: [{ [Op.gte]: dateFrom }, { [Op.lt]: dateTo }],
             },
             status: '1',
         };
+
+        if (activity) filter.activity = activity;
 
         const totalItems = await global.DB.UserLog.count({ where: filter });
         const offset = limit * (page - 1);
@@ -34,7 +35,7 @@ export class UserActivitiesService {
                 'activity',
                 'user_id',
                 'ip_address',
-                'createdAt',
+                'created_at',
             ],
             include: {
                 model: global.DB.User,
@@ -43,6 +44,7 @@ export class UserActivitiesService {
             },
             limit,
             offset,
+            order: [['created_at', 'DESC']],
         });
 
         return {

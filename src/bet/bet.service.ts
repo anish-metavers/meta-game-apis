@@ -112,9 +112,11 @@ export class BetService {
                 'bet_result',
                 'bet_odds',
                 'bet_option',
+                'created_at',
             ],
             limit,
             offset,
+            order: [['created_at', 'DESC']],
         });
 
         return {
