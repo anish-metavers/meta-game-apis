@@ -12,34 +12,45 @@ const passwordValidator = require('password-validator');
 
 export class CreateUser {
     @IsNotEmpty({ message: '$property is Required!!' })
-    name: String;
+    name: string;
 
     @IsNotEmpty()
     @IsEmail()
-    email: String;
+    email: string;
 
     @IsNotEmpty()
     @IsString()
-    password: String;
+    password: string;
 
     @IsArray()
-    roles: Number[];
+    roles: number[];
 }
 
 export class UpdateUser {
     @IsNotEmpty({ message: '$property is Required!!' })
-    name: String;
+    name: string;
 
     @IsNotEmpty()
     @IsEmail()
-    email: String;
+    email: string;
 
     @IsNotEmpty()
     @IsString()
-    password: String;
+    password: string;
 
     @IsArray()
-    roles: Number[];
+    roles: number[];
+}
+
+export class ChangePassword {
+    @IsNotEmpty()
+    oldPassword: string;
+
+    @IsNotEmpty()
+    newPassword: string;
+
+    @IsNotEmpty()
+    confirmPassword: string;
 }
 
 // Create a schema

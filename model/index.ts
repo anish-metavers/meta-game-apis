@@ -9,6 +9,7 @@ import Bets from './bets';
 import GameConfig from './gameConfig';
 import BankAccount from './bankAccount';
 import Upi from './upi';
+import UserLog from './userLog';
 
 const DB = async () => {
     const sequelize = new Sequelize(
@@ -21,7 +22,6 @@ const DB = async () => {
         process.env.IS_PROD === 'true'
             ? process.env.PROD_MYSQL_PASSWORD
             : process.env.LOCAL_MYSQL_PASSWORD,
-
         {
             host:
                 process.env.IS_PROD === 'true'
@@ -53,7 +53,15 @@ const DB = async () => {
             GameConfig: GameConfig(sequelize, DataTypes),
             BankAccount: BankAccount(sequelize, DataTypes),
             Upi: Upi(sequelize, DataTypes),
+            UserLog: UserLog(sequelize, DataTypes),
         };
+
+        /// Setting the association of model
+        Object.keys(db).forEach((modelName) => {
+            if (db[modelName].associate) {
+                db[modelName].associate(db);
+            }
+        });
 
         // // ------ DANGER TO UNCOMMENT ------
         await sequelize.sync({ alter: true });

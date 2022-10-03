@@ -1,7 +1,14 @@
 import { Body, Injectable, HttpException } from '@nestjs/common';
-import { CreateUser, UpdateUser, passwordSchema } from './dto/userDTO';
+import {
+    CreateUser,
+    UpdateUser,
+    passwordSchema,
+    ChangePassword,
+} from './dto/userDTO';
 import { Op } from 'sequelize';
 import * as bcrypt from 'bcrypt';
+import { Request } from 'express';
+import { ErrorConfig } from 'utils/config';
 
 @Injectable()
 export class UserService {
@@ -11,6 +18,74 @@ export class UserService {
     //     });
     //     return user;
     // }
+
+    async changePassword(req: Request, changePassword: ChangePassword) {
+        const { oldPassword, newPassword, confirmPassword } = changePassword;
+
+        const user = await global.DB.User.findOne({
+            where: {
+                id: req['user'].id,
+            },
+            attributes: ['id', 'password', 'email'],
+        });
+
+        // Check NewPassword and Confirm Password
+        if (newPassword !== confirmPassword)
+            throw new HttpException(
+                {
+                    ...ErrorConfig.CONFIRM_PASS_NOT_MATCH,
+                    // message: 'New Password and Confirm Password does not match',
+                    statusCode: 400,
+                },
+                400,
+            );
+
+        // Checking Old Password from DB
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!isMatch)
+            throw new HttpException(
+                {
+                    ...ErrorConfig.INVALID_OLD_PASS,
+                    // message: 'Invalid Old Password',
+                    statusCode: 400,
+                },
+                400,
+            );
+
+        // Password Validation Check
+        const isPassValid = passwordSchema.validate(newPassword, {
+            details: true,
+        });
+        if (isPassValid && isPassValid.length > 0)
+            throw new HttpException(
+                {
+                    errorCode: ErrorConfig.PASSWORD_VALIDATION_FAILED.errorCode,
+                    message: isPassValid[0].message,
+                    statusCode: 400,
+                },
+                400,
+            );
+
+        // Hashing New Password
+        const passwordHash = await bcrypt.hash(newPassword, 10);
+
+        await user.update({
+            password: passwordHash,
+        });
+
+        // Creating an Entry in UserLog
+        await global.DB.UserLog.create({
+            user_id: user.id,
+            ip_address:
+                req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+            activity: 'change_password',
+            status: '1',
+        });
+
+        return {
+            message: 'Password changed successfully',
+        };
+    }
 
     async createUser(@Body() body: CreateUser) {
         const { name, password, roles } = body;
