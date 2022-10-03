@@ -64,7 +64,7 @@ const DB = async () => {
         });
 
         // // ------ DANGER TO UNCOMMENT ------
-        await sequelize.sync({ alter: true });
+        // await sequelize.sync({ alter: true });
 
         global.DB = db;
     } catch (error) {
