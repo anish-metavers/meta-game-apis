@@ -73,6 +73,7 @@ const model = (sequelize: any, DataTypes: any) => {
             sequelize,
             modelName: 'Game',
             tableName: 'game',
+            initialAutoIncrement: '1000',
         },
     );
     return Game;

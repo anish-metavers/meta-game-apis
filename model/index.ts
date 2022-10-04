@@ -7,6 +7,8 @@ import RolesPermissions from './rolesPermissions';
 import Game from './game';
 import Bets from './bets';
 import GameConfig from './gameConfig';
+import BankAccount from './bankAccount';
+import Upi from './upi';
 import UserLog from './userLog';
 
 const DB = async () => {
@@ -49,6 +51,8 @@ const DB = async () => {
             Game: Game(sequelize, DataTypes),
             Bets: Bets(sequelize, DataTypes),
             GameConfig: GameConfig(sequelize, DataTypes),
+            BankAccount: BankAccount(sequelize, DataTypes),
+            Upi: Upi(sequelize, DataTypes),
             UserLog: UserLog(sequelize, DataTypes),
         };
 

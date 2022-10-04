@@ -6,20 +6,20 @@ export class SignUpDTO {
     @IsNotEmpty()
     name: String;
 
-    @IsNotEmpty()
     @IsEmail()
+    @IsNotEmpty()
     email: String;
 
-    @IsNotEmpty()
     @IsString()
+    @IsNotEmpty()
     password: String;
 
     roles: Number[];
 }
 
 export class LoginDTO {
-    @IsNotEmpty()
     @IsEmail()
+    @IsNotEmpty()
     email: String;
 
     @IsNotEmpty()

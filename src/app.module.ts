@@ -9,6 +9,7 @@ import { CronModule } from './cron/cron.module';
 import { GameModule } from './game/game.module';
 import { BetModule } from './bet/bet.module';
 import { GameConfigModule } from './game-config/game-config.module';
+import { BankAccountModule } from './bank-account/bank-account.module';
 import { UserActivitiesModule } from './user-activities/user-activities.module';
 @Module({
     imports: [
@@ -22,6 +23,7 @@ import { UserActivitiesModule } from './user-activities/user-activities.module';
         GameModule,
         BetModule,
         GameConfigModule,
+        BankAccountModule,
         UserActivitiesModule,
     ],
     controllers: [],

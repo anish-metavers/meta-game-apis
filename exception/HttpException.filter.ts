@@ -5,6 +5,7 @@ import {
     HttpException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { ErrorConfig } from 'utils/config';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -14,13 +15,25 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const request = ctx.getRequest<Request>();
         const status = exception.getStatus();
 
+        let resObj = exception.getResponse();
+        if (
+            !exception.getResponse()['errorCode'] &&
+            Array.isArray(exception.getResponse()['message'])
+        ) {
+            resObj['errorCode'] =
+                ErrorConfig.API_BODY_BASIC_VALIDATION.errorCode;
+            // console.log(exception.getResponse()['message']);
+            resObj['message'] = exception
+                .getResponse()
+                ['message'][0].toString();
+        }
         response.status(status).json(
             typeof exception.getResponse() === 'string'
                 ? {
                       message: exception.getResponse(),
                       statusCode: exception.getStatus(),
                   }
-                : exception.getResponse(),
+                : resObj, //exception.getResponse(),
         );
     }
 }

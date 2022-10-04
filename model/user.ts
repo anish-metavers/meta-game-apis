@@ -7,7 +7,7 @@ const model = (sequelize: any, DataTypes: any) => {
         {
             // Model attributes are defined here
             id: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.BIGINT.UNSIGNED,
                 autoIncrement: true,
                 allowNull: false,
                 primaryKey: true,
@@ -20,14 +20,56 @@ const model = (sequelize: any, DataTypes: any) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+            mobile: { // NEW
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            country_code: { // NEW
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            alt_email: { // NEW
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            alt_mobile: { // NEW
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            alt_mobile_country_code: { // NEW
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
             wallet_balance: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.DECIMAL,
                 allowNull: false,
                 defaultValue: 0,
             },
             exposure_balance: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.DECIMAL,
                 allowNull: false,
+                defaultValue: 0,
+            },
+            deposit_exposure: { // NEW
+                type: DataTypes.DECIMAL,
+                allowNull: true,
+                defaultValue: 0,
+            },
+            mac_address: { // NEW
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            remark: { // NEW
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            role_id: { // NEW
+                type: DataTypes.INTEGER,
+                allowNull: true,
+            },
+            created_by_id: { // NEW
+                type: DataTypes.INTEGER,
+                allowNull: true,
                 defaultValue: 0,
             },
             password: {
@@ -39,6 +81,31 @@ const model = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
                 defaultValue: '1',
             },
+            // credentials_expired_status: { // NEW
+            //     type: DataTypes.ENUM('0', '1'),
+            //     allowNull: false,
+            //     defaultValue: '1',
+            // },
+            // hide_account: { // NEW
+            //     type: DataTypes.ENUM('0', '1'),
+            //     allowNull: false,
+            //     defaultValue: '1',
+            // },
+            // verified: { // NEW
+            //     type: DataTypes.ENUM('0', '1'),
+            //     allowNull: false,
+            //     defaultValue: '0',
+            // },
+            // account_locked: { // NEW
+            //     type: DataTypes.ENUM('0', '1'),
+            //     allowNull: false,
+            //     defaultValue: '1',
+            // },
+            // account_expired: { // NEW
+            //     type: DataTypes.ENUM('0', '1'),
+            //     allowNull: false,
+            //     defaultValue: '1',
+            // },
             createdAt: { type: DataTypes.DATE, field: 'created_at' },
             updatedAt: { type: DataTypes.DATE, field: 'updated_at' },
         },
