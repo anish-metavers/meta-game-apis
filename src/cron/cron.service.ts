@@ -14,7 +14,7 @@ export class CronService {
     private BETTING_TIME = 30; // In Seconds
     private CARD_DRAWN_INTERVAL = 5; // In Seconds
 
-    // @Cron('*/1 * * * * *')
+    @Cron('*/1 * * * * *')
     async cronForTeenPatti() {
         try {
             if (!this.Game) {
