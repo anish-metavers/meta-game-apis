@@ -29,7 +29,7 @@ const model = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
             },
             bet_odds: {
-                type: DataTypes.DECIMAL,
+                type: DataTypes.FLOAT,
                 allowNull: true,
             },
             bet_result: {
