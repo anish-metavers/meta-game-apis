@@ -41,17 +41,17 @@ const model = (sequelize: any, DataTypes: any) => {
                 allowNull: true,
             },
             wallet_balance: {
-                type: DataTypes.DECIMAL,
+                type: DataTypes.FLOAT,
                 allowNull: false,
                 defaultValue: 0,
             },
             exposure_balance: {
-                type: DataTypes.DECIMAL,
+                type: DataTypes.FLOAT,
                 allowNull: false,
                 defaultValue: 0,
             },
             deposit_exposure: { // NEW
-                type: DataTypes.DECIMAL,
+                type: DataTypes.FLOAT,
                 allowNull: true,
                 defaultValue: 0,
             },
