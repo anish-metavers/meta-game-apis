@@ -20,54 +20,64 @@ const model = (sequelize: any, DataTypes: any) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            mobile: { // NEW
+            mobile: {
+                // NEW
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            country_code: { // NEW
+            country_code: {
+                // NEW
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            alt_email: { // NEW
+            alt_email: {
+                // NEW
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            alt_mobile: { // NEW
+            alt_mobile: {
+                // NEW
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            alt_mobile_country_code: { // NEW
+            alt_mobile_country_code: {
+                // NEW
                 type: DataTypes.STRING,
                 allowNull: true,
             },
             wallet_balance: {
-                type: DataTypes.FLOAT,
+                type: DataTypes.FLOAT(10, 2),
                 allowNull: false,
                 defaultValue: 0,
             },
             exposure_balance: {
-                type: DataTypes.FLOAT,
+                type: DataTypes.FLOAT(10, 2),
                 allowNull: false,
                 defaultValue: 0,
             },
-            deposit_exposure: { // NEW
+            deposit_exposure: {
+                // NEW
                 type: DataTypes.FLOAT,
                 allowNull: true,
                 defaultValue: 0,
             },
-            mac_address: { // NEW
+            mac_address: {
+                // NEW
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            remark: { // NEW
+            remark: {
+                // NEW
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            role_id: { // NEW
+            role_id: {
+                // NEW
                 type: DataTypes.INTEGER,
                 allowNull: true,
             },
-            created_by_id: { // NEW
+            created_by_id: {
+                // NEW
                 type: DataTypes.INTEGER,
                 allowNull: true,
                 defaultValue: 0,
