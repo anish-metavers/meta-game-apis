@@ -186,33 +186,43 @@ export class CronService {
             },
         );
 
+        console.time('Balance Update');
         // Find All Bets placed in the Current Game
         const bets = await global.DB.Bets.findAll({
             where: {
                 game_id: Game.id,
             },
         });
+        const dataToProcess = [];
 
         // Iterating all Bets and
         // Updating Users 'wallet_balance' according to 'bet_result'
         for (const bet of bets) {
-            const user = await global.DB.User.findOne({
-                where: {
-                    id: bet.user_id,
-                },
-            });
-
             const win_amount = bet.amount * bet.bet_odds - bet.amount;
             const wallet_balance_literal =
                 bet.bet_result === 'win'
                     ? `wallet_balance + ${win_amount}`
                     : `wallet_balance - ${bet.amount}`;
 
-            await user.update({
-                wallet_balance: literal(wallet_balance_literal),
-                exposure_balance: literal(`exposure_balance - ${bet.amount}`),
-            });
+            dataToProcess.push(
+                global.DB.User.update(
+                    {
+                        wallet_balance: literal(wallet_balance_literal),
+                        exposure_balance: literal(
+                            `exposure_balance - ${bet.amount}`,
+                        ),
+                    },
+                    {
+                        where: {
+                            id: bet.user_id,
+                        },
+                    },
+                ),
+            );
         }
+
+        await Promise.all(dataToProcess);
+        console.timeEnd('Balance Update');
     }
 
     // Just for Test purposes only
