@@ -185,7 +185,7 @@ export class CronService {
                 },
             },
         );
-
+        console.time('Balance Update');
         // Find All Bets placed in the Current Game
         const bets = await global.DB.Bets.findAll({
             where: {
@@ -213,6 +213,8 @@ export class CronService {
                 exposure_balance: literal(`exposure_balance - ${bet.amount}`),
             });
         }
+
+        console.timeEnd('Balance Update');
     }
 
     // Just for Test purposes only
