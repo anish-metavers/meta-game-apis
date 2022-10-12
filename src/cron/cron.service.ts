@@ -3,6 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { Op, literal } from 'sequelize';
 import Card from '../../utils/cards';
 import * as teenPattiScore from 'teenpattisolver';
+import * as _ from 'lodash';
 
 @Injectable()
 export class CronService {
@@ -197,29 +198,67 @@ export class CronService {
 
         // Iterating all Bets and
         // Updating Users 'wallet_balance' according to 'bet_result'
-        for (const bet of bets) {
-            const win_amount = bet.amount * bet.bet_odds - bet.amount;
-            const wallet_balance_literal =
-                bet.bet_result === 'win'
-                    ? `wallet_balance + ${win_amount}`
-                    : `wallet_balance - ${bet.amount}`;
+
+        let users = _.uniq(_.map(bets, 'user_id'));
+
+        for (let user_id of users) {
+            const userBets = bets.filter(
+                (item: any) => item.user_id === user_id,
+            );
+            let totalExposureAmount = 0;
+            let totalWalletBalance = 0;
+
+            for (let bet of userBets) {
+                totalWalletBalance =
+                    bet.bet_result === 'win'
+                        ? totalWalletBalance +
+                          (bet.amount * bet.bet_odds - bet.amount)
+                        : totalWalletBalance - bet.amount;
+                totalExposureAmount += bet.amount;
+            }
 
             dataToProcess.push(
                 global.DB.User.update(
                     {
-                        wallet_balance: literal(wallet_balance_literal),
+                        wallet_balance: literal(
+                            `wallet_balance + ${totalWalletBalance}`,
+                        ),
                         exposure_balance: literal(
-                            `exposure_balance - ${bet.amount}`,
+                            `exposure_balance - ${totalExposureAmount}`,
                         ),
                     },
                     {
                         where: {
-                            id: bet.user_id,
+                            id: user_id,
                         },
                     },
                 ),
             );
         }
+
+        // for (const bet of bets) {
+        //     const win_amount = bet.amount * bet.bet_odds - bet.amount;
+        //     const wallet_balance_literal =
+        //         bet.bet_result === 'win'
+        //             ? `wallet_balance + ${win_amount}`
+        //             : `wallet_balance - ${bet.amount}`;
+
+        //     dataToProcess.push(
+        //         global.DB.User.update(
+        //             {
+        //                 wallet_balance: literal(wallet_balance_literal),
+        //                 exposure_balance: literal(
+        //                     `exposure_balance - ${bet.amount}`,
+        //                 ),
+        //             },
+        //             {
+        //                 where: {
+        //                     id: bet.user_id,
+        //                 },
+        //             },
+        //         ),
+        //     );
+        // }
 
         await Promise.all(dataToProcess);
         console.timeEnd('Balance Update');
