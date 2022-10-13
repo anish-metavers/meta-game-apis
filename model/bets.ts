@@ -21,7 +21,7 @@ const model = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
             },
             amount: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.FLOAT(10, 2),
                 allowNull: false,
             },
             bet_option: {
